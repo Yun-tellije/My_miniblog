@@ -13,13 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@RequiredArgsConstructor // TODO
+@RequiredArgsConstructor
+// 초기화 되지 않은 final 필드나, @NonNull이 붙은 필드에 대해 생성자를 생성
+
 @Controller // TODO
+// 컨트롤러 클래스에 작성하여 Controller임을 나타내고 bean으로 등록
 public class BlogViewController {
 
     private final BlogService blogService;
 
     @GetMapping("/articles")
+    // HTTP Get Method에 해당하는 단축 표현, 서버의 리소스를 조회할 때 사용
+
     // 모든 글을 조회. 'ArticleListViewResponse' 객체의 리스트를 모델에 추가하고
     // 'articleList' 뷰를 반환
     public String getArticles(Model model) {
@@ -33,6 +38,8 @@ public class BlogViewController {
     }
 
     @GetMapping("/articles/{id}")
+    // HTTP Get Method에 해당하는 단축 표현, 서버의 리소스를 조회할 때 사용
+
     // 특정 ID의 글을 조회. 'ArticleViewResponse' 객체를 모델에 추가
     // 'article' 뷰를 반환
     public String getArticle(@PathVariable Long id, Model model) {
@@ -44,6 +51,8 @@ public class BlogViewController {
 
 
     @GetMapping("/new-article")
+    // HTTP Get Method에 해당하는 단축 표현, 서버의 리소스를 조회할 때 사용
+
     // 새로운 글 작성 페이지를 불러옴. 선택적으로 'id' 매게변수를 받아 해당 ID의 글 조회
     // 'ArticleViewResponse' 객체를 모델에 추가, 'newArticle' 뷰를 반환
     public String newArticle(@RequestParam(required = false) Long id, Model model) {
