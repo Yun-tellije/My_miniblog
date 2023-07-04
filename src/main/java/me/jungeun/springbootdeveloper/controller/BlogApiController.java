@@ -83,6 +83,7 @@ public class BlogApiController {
     // 특정 ID의 글을 업데이트. 요청 바디에는 'UpdateArticleRequest' 객체가 필요
     public ResponseEntity<Article> updateArticle(@PathVariable long id, // TODO
                                                  @RequestBody UpdateArticleRequest request) { // TODO
+        // RequestBody
         Article updatedArticle = blogService.update(id, request);
 
         return ResponseEntity.ok()
