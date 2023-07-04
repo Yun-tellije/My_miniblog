@@ -57,6 +57,9 @@ public class BlogApiController {
 
     // 특정 ID의 글을 조회. 'ArticleResponse' 객체를 반환
     public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
+        // 데이터를 받아올 때 사용, 값을 하나만 받아올 수 있다
+        // <-> RequestParam
+
         Article article = blogService.findById(id);
 
         return ResponseEntity.ok()
