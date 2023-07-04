@@ -56,6 +56,8 @@ public class BlogViewController {
     // 새로운 글 작성 페이지를 불러옴. 선택적으로 'id' 매게변수를 받아 해당 ID의 글 조회
     // 'ArticleViewResponse' 객체를 모델에 추가, 'newArticle' 뷰를 반환
     public String newArticle(@RequestParam(required = false) Long id, Model model) {
+        // 데이터를 받아오는 데에 사용, 여러 데이터를 받아올 수 있다
+
         if (id == null) {
             model.addAttribute("article", new ArticleViewResponse());
         } else {
