@@ -31,6 +31,8 @@ public class BlogApiController {
 
     // 새로운 글 추가. 요청 바디에는 'AddArticleRequest' 객체가 필요
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) { // RequestBody -> dto
+        // HTTPRequest의 본문 requestBody의 내용을 자바 객체로 매핑하는 역할
+
         Article savedArticle = blogService.save(request);
 
         return ResponseEntity.status(HttpStatus.CREATED) // 201번 응답 코드 번호
@@ -62,6 +64,8 @@ public class BlogApiController {
     }
 
     @DeleteMapping("/api/articles/{id}") // TODO
+    // 서버의 리소스를 삭제
+
     // 특정 ID의 글을 삭제.
     public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
         blogService.delete(id);
@@ -71,6 +75,8 @@ public class BlogApiController {
     }
 
     @PutMapping("/api/articles/{id}") // TODO
+    // 서버의 리소스를 모두 수정
+
     // 특정 ID의 글을 업데이트. 요청 바디에는 'UpdateArticleRequest' 객체가 필요
     public ResponseEntity<Article> updateArticle(@PathVariable long id, // TODO
                                                  @RequestBody UpdateArticleRequest request) { // TODO
