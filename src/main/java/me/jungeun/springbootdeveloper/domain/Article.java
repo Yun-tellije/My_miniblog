@@ -12,7 +12,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class) // TODO
+// 엔티티가 삽입, 삭제, 수정, 조회 등의 작업을 할 때 전, 후에 어떠한 작업을 하기 위해
+// 이벤트 처리를 위해 사용
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // TODO
+// 파라미터가 없는 기본 생성자를 생성
 @Getter // TODO
 @Entity // TODO
 public class Article {
