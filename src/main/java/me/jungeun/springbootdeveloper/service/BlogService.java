@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @RequiredArgsConstructor // TODO
+// 초기화 되지 않은 final 필드나, @NonNull이 붙은 필드에 대해 생성자를 생성
+
 @Service // TODO
+// 서비스를 지정하는 어노테이션
 public class BlogService {
 
     private final BlogRepository blogRepository;
