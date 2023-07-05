@@ -26,8 +26,10 @@ public class ExampleController {
         return "example";
     }
 
-    @Setter // TODO
-    @Getter // TODO
+    @Setter
+    // Lombok에서 가장 많이 사용되는 어노테이션, 자동으로 setPerson() 메소드 생성
+    @Getter
+    // Lombok에서 가장 많이 사용되는 어노테이션, 자동으로 getPerson() 메소드 생성
     class Person {
         private Long id;
         private String name;
