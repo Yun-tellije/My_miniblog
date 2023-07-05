@@ -38,6 +38,8 @@ public class BlogService {
     }
 
     @Transactional
+    // 사용 시, 해당 범위 내 메서드가 트랜잭션이 되도록 보장해준다
+    // -> 선언적 트랜잭션, 직접 객체를 만들 필요 없이 선언으로 관리를 용이하게 해줌
     public Article update(long id, UpdateArticleRequest request) {
         Article article = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
