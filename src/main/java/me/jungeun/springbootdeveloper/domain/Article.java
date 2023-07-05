@@ -17,12 +17,21 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // TODO
 // 파라미터가 없는 기본 생성자를 생성
+
 @Getter // TODO
+// Lombok에서 가장 많이 사용되는 어노테이션, 자동으로 getPerson() 메소드 생성
+
 @Entity // TODO
+// JPA를 사용해 테이블과 매핑할 클래스에 붙여주는 어노테이션
+// @Entity를 붙이면 JPA가 해당 클래스를 관리
 public class Article {
 
     @Id  // TODO
+    // 특정 속성을 기본키로 설정하는 어노테이션
     @GeneratedValue(strategy = GenerationType.IDENTITY) // TODO
+    // DBMS 종류에 따라 맞춰 자동적으로 값을 JPA에서 생성해 입력
+    // strategy라는 옵션이 존재해 자동 생성 값을 어떻게 생성할지 지정 가능
+
     @Column(name = "id", updatable = false)
     // updatable = false
     // 엔티티의 필드나 속성이 데이터베이스에서 업데이트되지 않도록 지정
@@ -30,6 +39,9 @@ public class Article {
     private Long id;
 
     @Column(name = "title", nullable = false)
+    // @Column 데이터베이스의 테이블에 있는 컬럼과 동일하게 1:1로 매칭되기 때문에
+    // Entity 클래스안에 내부변수로 정의된다
+
     // nullable = false
     // 엔티티의 필드나 속성이 null 값이 될 수 없음을 의미, null이면 예외 발생
     // 이 필드가 반드시 지정되어야할 때 사용
