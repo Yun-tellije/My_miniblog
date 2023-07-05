@@ -51,10 +51,13 @@ public class Article {
     private String content;
 
     @CreatedDate // TODO
+    // 생성된 시간 정보
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate // TODO
+    // 수정된 시간 정보
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
