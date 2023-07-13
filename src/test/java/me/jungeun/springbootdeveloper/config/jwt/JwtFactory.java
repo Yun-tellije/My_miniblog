@@ -1,4 +1,4 @@
-package me.jungeun.springbootdeveloper.controller.config.jwt;
+package me.jungeun.springbootdeveloper.config.jwt;
 
 
 import io.jsonwebtoken.Header;

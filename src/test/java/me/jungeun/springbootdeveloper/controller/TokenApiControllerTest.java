@@ -1,121 +1,91 @@
 package me.jungeun.springbootdeveloper.controller;
 
-import io.jsonwebtoken.Jwts;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import me.jungeun.springbootdeveloper.config.jwt.JwtFactory;
 import me.jungeun.springbootdeveloper.config.jwt.JwtProperties;
-import me.jungeun.springbootdeveloper.config.jwt.TokenProvider;
-import me.jungeun.springbootdeveloper.controller.config.jwt.JwtFactory;
+import me.jungeun.springbootdeveloper.domain.RefreshToken;
 import me.jungeun.springbootdeveloper.domain.User;
+import me.jungeun.springbootdeveloper.dto.CreateAccessTokenRequest;
+import me.jungeun.springbootdeveloper.repository.RefreshTokenRepository;
 import me.jungeun.springbootdeveloper.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.time.Duration;
-import java.util.Date;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class TokenProviderTest {
-
+@AutoConfigureMockMvc
+class TokenApiControllerTest {
     @Autowired
-    private TokenProvider tokenProvider;
-
+    protected MockMvc mockMvc;
     @Autowired
-    private UserRepository userRepository;
-
+    protected ObjectMapper objectMapper;
     @Autowired
-    private JwtProperties jwtProperties;
+    private WebApplicationContext context;
+    @Autowired
+    JwtProperties jwtProperties;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
 
-    @DisplayName("generateToken(): 유저 정보와 만료 기간을 전달해 토큰을 만들 수 있다.")
+    @BeforeEach
+    public void mockMvcSetUp(){
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .build();
+        userRepository.deleteAll();
+    }
+
+    @DisplayName("createNewAccessToken: 새로운 액세스 토큰을 발급한다.")
     @Test
-    void generateToken() {
-        // given
+    public void createNewAccessToken() throws Exception{
+        //given
+        final String url = "/api/token";
+
+        // 유저의 이름
         User testUser = userRepository.save(User.builder()
                 .email("user@gmail.com")
                 .password("test")
                 .build());
 
-        // when
-        String token = tokenProvider.generateToken(testUser, Duration.ofDays(14));
-
-        // then
-        Long userId = Jwts.parser()
-                .setSigningKey(jwtProperties.getSecretKey())
-                .parseClaimsJws(token)
-                .getBody()
-                .get("id", Long.class);
-
-        assertThat(userId).isEqualTo(testUser.getId());
-    }
-
-    @DisplayName("validToken(): 만료된 토큰인 경우에 유효성 검증에 실패한다.")
-    @Test
-    void validToken_invalidToken() {
-        // given
-        String token = JwtFactory.builder()
-                .expiration(new Date(new Date().getTime() - Duration.ofDays(7).toMillis()))
+        // 리프래쉬 토큰
+        String refreshToken = JwtFactory.builder()
+                .claims(Map.of("id", testUser.getId()))
                 .build()
                 .createToken(jwtProperties);
 
-        // when
-        boolean result = tokenProvider.validToken(token);
+        // 리프레쉬 토큰의 디비에 저장
+        refreshTokenRepository.save(new RefreshToken(testUser.getId(),
+                refreshToken));
 
-        // then
-        assertThat(result).isFalse();
-    }
-
-
-    @DisplayName("validToken(): 유효한 토큰인 경우에 유효성 검증에 성공한다.")
-    @Test
-    void validToken_validToken() {
-        // given
-        String token = JwtFactory.withDefaultValues()
-                .createToken(jwtProperties);
+        // dto
+        CreateAccessTokenRequest request = new CreateAccessTokenRequest();
+        request.setRefreshToken(refreshToken);
+        // 요청 바디
+        final String requestBody = objectMapper.writeValueAsString(request);
 
         // when
-        boolean result = tokenProvider.validToken(token);
+        // 여기의 결과는
+        ResultActions resultActions = mockMvc.perform(post(url) // 요청을 보내고.
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody)); // 컨텐트 담기
 
-        // then
-        assertThat(result).isTrue();
-    }
-
-
-    @DisplayName("getAuthentication(): 토큰 기반으로 인증정보를 가져올 수 있다.")
-    @Test
-    void getAuthentication() {
-        // given
-        String userEmail = "user@email.com";
-        String token = JwtFactory.builder()
-                .subject(userEmail)
-                .build()
-                .createToken(jwtProperties);
-
-        // when
-        Authentication authentication = tokenProvider.getAuthentication(token);
-
-        // then
-        assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo(userEmail);
-    }
-
-    @DisplayName("getUserId(): 토큰으로 유저 ID를 가져올 수 있다.")
-    @Test
-    void getUserId() {
-        // given
-        Long userId = 1L;
-        String token = JwtFactory.builder()
-                .claims(Map.of("id", userId))
-                .build()
-                .createToken(jwtProperties);
-
-        // when
-        Long userIdByToken = tokenProvider.getUserId(token);
-
-        // then
-        assertThat(userIdByToken).isEqualTo(userId);
+        //then
+        resultActions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty());
     }
 }
