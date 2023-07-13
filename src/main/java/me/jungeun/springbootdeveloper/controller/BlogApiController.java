@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,10 +31,10 @@ public class BlogApiController {
     // HTTP Post Method에 해당하는 단축 표현, 서버에 리소스를 등록할 때 사용
 
     // 새로운 글 추가. 요청 바디에는 'AddArticleRequest' 객체가 필요
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) { // RequestBody -> dto
+    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request, Principal principal) { // RequestBody -> dto
         // HTTPRequest의 본문 requestBody의 내용을 자바 객체로 매핑하는 역할
 
-        Article savedArticle = blogService.save(request);
+        Article savedArticle = blogService.save(request, principal.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED) // 201번 응답 코드 번호
                 .body(savedArticle);
