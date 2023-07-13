@@ -50,6 +50,9 @@ public class Article {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "author", nullable = false)
+    private String author;
+
     @CreatedDate // TODO
     // 생성된 시간 정보
 
@@ -65,22 +68,13 @@ public class Article {
     // @Builder
     // 빌더 패턴을 자동으로 적용?
     // 생성자의 매개변수 순서에 영향을 받지 않고 필요한 필드만 설정가능
-    public Article(String title, String content) {
+    public Article(String author, String title, String content){
+        this.author = author;
         this.title = title;
         this.content = content;
     }
 
     public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
-    @Column(name = "author", nullable = false)
-    private String author;
-
-    @Builder
-    public Article(String author, String title, String content){
-        this.author = author;
         this.title = title;
         this.content = content;
     }

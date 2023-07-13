@@ -38,7 +38,7 @@ public class BlogService {
         Article article = blogRepository.findById(id)
                         .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
         authorizeArticleAuthor(article);
-        blogRepository.deleteById(id);
+        blogRepository.delete(article);
     }
 
     @Transactional
@@ -57,5 +57,9 @@ public class BlogService {
     // 게시글을 작성한 유저인지 확인
     private static void authorizeArticleAuthor(Article article){
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if(!article.getAuthor().equals(userName)){
+            throw new IllegalArgumentException("not authorized");
+        }
     }
 }
