@@ -74,4 +74,14 @@ public class Article {
         this.title = title;
         this.content = content;
     }
+
+    @Column(name = "author", nullable = false)
+    private String author;
+
+    @Builder
+    public Article(String author, String title, String content){
+        this.author = author;
+        this.title = title;
+        this.content = content;
+    }
 }
