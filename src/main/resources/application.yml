@@ -11,6 +11,16 @@ spring:
   h2:
     console:
       enabled: true
-  jwt:
-    issuer: ajufresh@gamil.com
-    secret_key: study-springboot
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: <<입력>>
+            client-secret: <<입력>>
+            scope:
+              - email
+              - profile
+jwt:
+  issuer: ajufresh@gamil.com
+  secret_key: study-springboot
