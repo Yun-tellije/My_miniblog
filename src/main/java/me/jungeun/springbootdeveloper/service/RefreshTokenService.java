@@ -2,6 +2,7 @@ package me.jungeun.springbootdeveloper.service;
 
 import lombok.RequiredArgsConstructor;
 import me.jungeun.springbootdeveloper.domain.RefreshToken;
+import me.jungeun.springbootdeveloper.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
